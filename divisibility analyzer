@@ -1,0 +1,84 @@
+#include <vector>
+#include <map>
+#include <iostream>
+#include <chrono>
+using namespace std; 
+using namespace chrono;
+
+ 
+vector<int> del(map<int, vector<int>>mp, int number){ // записывает делители числа 
+    vector<int> vec_del = {1};
+    if (mp.count(number) == 0){
+        for (int start_simple =2; start_simple < number+1; start_simple++)
+            if (number % start_simple == 0)
+                vec_del.push_back(start_simple);
+        mp[number] = vec_del;
+        return  vec_del; 
+    }
+    else
+        
+        return mp[number] ; 
+}
+
+void print_simple( int number, vector<int> del) { //проверяет  число простое или нет
+    if (del.size() >2)
+        cout <<  "Число " << number << " НЕ простое" << endl;
+    else 
+        cout <<  "Число " << number << " простое" << endl;
+   
+} 
+
+void print_perfect(int number,vector<int> del ){ //проверяет число совершенное или нет
+    int total = - number;
+    for (auto d :del) 
+        total += d;
+    
+    if (total == number)
+        cout <<  "Число " << number << " совершенное" << endl;
+    else 
+        cout <<  "Число " << number << " НЕ совершенное" << endl;
+}
+
+
+long NOD (int number2, vector<int> vec_del1, vector<int> vec_del2){ //наибольший общий делитель
+    long maxx=1;
+    for (auto d :vec_del1)
+        for (auto b: vec_del2)
+            if (d % b ==0  && number2% b ==0)
+                maxx = b;
+    return maxx;
+}
+long NOK (int number1, int number2, vector<int> vec_del1, vector<int> vec_del2 ){ //Наименьшее общее кратное
+    long NOK_number = (number1 * number2)/(NOD(number2, vec_del1, vec_del2));
+    return NOK_number;
+}
+
+
+int main() {
+    int number1, number2;
+    cin >> number1 >> number2;
+    map<int, vector<int>> mp;
+    system_clock::time_point start = system_clock::now();
+    vector <int> delitely1 = del(mp, number1);
+    vector <int> delitely2 = del(mp, number2);
+    
+    
+    print_simple(number1, delitely1);
+    print_perfect (number1, delitely1);
+    print_simple(number2, delitely2);
+    print_perfect (number2, delitely2);
+    cout << "Наибольший общий делитель =>" << NOD (number2, delitely1, delitely2) << '\n';
+    cout << "Наименьшее общее кратное=>"<< NOK(number1, number2, delitely1, delitely2) << '\n';
+    system_clock::time_point end = system_clock::now();
+    duration<double> sec = end - start;
+    cout << sec.count();
+}
+
+
+
+
+
+
+
+
+
